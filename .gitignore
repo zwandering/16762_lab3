@@ -3,5 +3,5 @@
 *.pt
 build/*
 install/*
-logs/*
+log/*
 __pycache__/*
