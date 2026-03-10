@@ -1,3 +1,7 @@
 *.pdf
 *.ts
 *.pt
+build/*
+install/*
+logs/*
+__pycache__/*
