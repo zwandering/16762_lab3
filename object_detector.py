@@ -34,14 +34,16 @@ class YOLOEObjectDetector(Node):
         # TODO: ------------- start --------------
         # leave as is for part 1, 
         # change for part 2 to use the head camera
-        # self.color_sub = message_filters.Subscriber(self, Image, '/gripper_camera/color/image_rect_raw')
-        # self.depth_sub = message_filters.Subscriber(self, Image, '/gripper_camera/aligned_depth_to_color/image_raw')
-        # self.color_cam_info_sub = message_filters.Subscriber(self, CameraInfo, '/gripper_camera/color/camera_info')
+        self.color_sub = message_filters.Subscriber(self, Image, '/gripper_camera/color/image_rect_raw')
+        self.depth_sub = message_filters.Subscriber(self, Image, '/gripper_camera/aligned_depth_to_color/image_raw')
+        self.color_cam_info_sub = message_filters.Subscriber(self, CameraInfo, '/gripper_camera/color/camera_info')
+        
         # RealSense D435i head camera topics:
         # ros2 launch realsense2_camera rs_launch.py align_depth.enable:=true  pointcloud.enable:=false
-        self.color_sub = message_filters.Subscriber(self, Image, '/camera/camera/color/image_raw')
-        self.depth_sub = message_filters.Subscriber(self, Image, '/camera/camera/aligned_depth_to_color/image_raw')
-        self.color_cam_info_sub = message_filters.Subscriber(self, CameraInfo, '/camera/camera/color/camera_info')
+
+        # self.color_sub = message_filters.Subscriber(self, Image, '/camera/camera/color/image_raw')
+        # self.depth_sub = message_filters.Subscriber(self, Image, '/camera/camera/aligned_depth_to_color/image_raw')
+        # self.color_cam_info_sub = message_filters.Subscriber(self, CameraInfo, '/camera/camera/color/camera_info')
         # TODO: -------------- end ---------------
         self.latest_color = None
         self.latest_depth = None
@@ -64,11 +66,11 @@ class YOLOEObjectDetector(Node):
 
         # Load the YOLOE model, which should already saved to common models directory on the robot
         #   we use yolo-e-v26-small for its high performance and low latency on limited compute
-        # model_path = '/home/hello-robot/models'
-        # model_name = 'yoloe-26s-seg.pt'
-        # self.model = YOLO(osp.join(model_path, model_name))
-        model_name = './yoloe-26s-seg.pt'
-        self.model = YOLO(model_name)
+        model_path = '/home/hello-robot/models'
+        model_name = 'yoloe-26s-seg.pt'
+        self.model = YOLO(osp.join(model_path, model_name))
+        # model_name = './yoloe-26s-seg.pt'
+        # self.model = YOLO(model_name)
 
         # pass prompt for the object/s you want to detect
         self.obj_queries = obj_queries
