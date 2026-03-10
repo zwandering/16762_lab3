@@ -242,7 +242,7 @@ def move_to_configuration(node, configuration):
     wrist_roll = configuration[13]
     
     # Move arm and wrist joints
-    node.move_to_pose('joint_lift', lift_position, blocking=True)
+    node.move_to_pose({'joint_lift': lift_position}, blocking=True)
     node.move_to_pose(
         {
             'joint_arm': arm_extension,
