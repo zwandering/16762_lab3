@@ -41,14 +41,14 @@ class IKTargetFollowing(HelloNode):
 
     def get_goal_pose_in_base_frame(self, goal_msg):
         # TODO: ------------- start --------------
-        goal_transformed = self.tf_buffer.transform(goal_msg, self.target_frame)
+        goal_transformed = self.tf_buffer.transform(goal_msg, self.target_frame, timeout=rclpy.duration.Duration(seconds=1.0))
         # TODO: -------------- end ---------------
 
         return goal_transformed
 
     def get_gripper_pose_in_base_frame(self):
         # TODO: ------------- start --------------
-        gripper_transformed = self.tf_buffer.lookup_transform(self.target_frame, self.gripper_frame, rclpy.time.Time())
+        gripper_transformed = self.tf_buffer.lookup_transform(self.target_frame, self.gripper_frame, rclpy.time.Time(), timeout=rclpy.duration.Duration(seconds=1.0))
         # TODO: -------------- end ---------------
 
         return gripper_transformed
@@ -62,8 +62,10 @@ class IKTargetFollowing(HelloNode):
 
             goal_pos = ik.get_xyz_from_msg(goal_transformed)
             gripper_pos = ik.get_xyz_from_msg(gripper_transformed)
-        except:
-            print("Error getting transforms")
+        except Exception as e:
+            print(f"Error getting transforms: {e}")
+            import traceback
+            traceback.print_exc()
             return
 
         waypoint_pos, waypoint_orient = self.compute_waypoint_to_goal(goal_pos, gripper_pos)

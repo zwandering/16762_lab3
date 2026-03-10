@@ -11,7 +11,7 @@ import detection_utils
 import message_filters
 import numpy as np
 
-
+# ros2 launch stretch_core stretch_driver.launch.py
 # Don't forget to start the camera before starting this node!
 # Part 1: using in-gripper camera
 #    ros2 launch stretch_core d405_basic.launch.py
