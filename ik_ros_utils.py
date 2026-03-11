@@ -7,7 +7,7 @@ from tf2_geometry_msgs import TransformStamped
 
 # lift up to table height, wrist yaw in line with base, wrist pitch slightly down, gripper open
 READY_POSE_P1 = {
-    'joint_lift': 0.5,
+    'joint_lift': 0.45,
     'joint_wrist_yaw': 1.5,
     'joint_wrist_pitch': -0.1,
     'gripper_aperture': 0.5
