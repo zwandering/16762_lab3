@@ -77,7 +77,7 @@ def pixel_to_3d(xy_pix, z_depth, camera_info):
     y_out = ((y_pix - c_y) * z_depth) / f_y
     xyz_out = np.array([x_out, y_out, z_depth])
 
-    print(xyz_out*100, 'cm') # convert to cm
+    # print(xyz_out*100, 'cm') # convert to cm
 
     return xyz_out
 

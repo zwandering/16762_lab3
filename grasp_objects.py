@@ -28,7 +28,7 @@ class IKTargetFollowing(HelloNode):
 
         self.shift_x = 0.05
         self.shift_y = 0.0
-        self.shift_z = 0.0
+        self.shift_z = 0.02
     
     def joint_states_callback(self, msg):
         # unpacks joint state messages for what works with/is expected by ikpy
