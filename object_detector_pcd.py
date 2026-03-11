@@ -121,7 +121,7 @@ class YOLOEObjectDetector(Node):
             detections = None
         else:
             # Run YOLO-E object detection on the color frame
-            results = self.model(self.latest_color, verbose=False, thres=0.25)
+            results = self.model(self.latest_color, verbose=False, conf=0.2)
             # Parse the detection results
             detections = detection_utils.parse_results(results)
 
