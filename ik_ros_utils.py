@@ -131,25 +131,7 @@ def get_modified_urdf():
 
 new_urdf_path = get_modified_urdf()
 # Define which joints are active in IK (True) vs fixed (False)
-active_links_mask = [
-    False,  # 0: base_link (fixed)
-    True,   # 1: joint_base_rotation (revolute - mobile base yaw)
-    True,   # 2: joint_base_translation (prismatic - mobile base x)
-    False,  # 3: joint_mast (fixed)
-    True,   # 4: joint_lift (prismatic - vertical lift)
-    False,  # 5: joint_arm_l4 (fixed)
-    True,   # 6: joint_arm_l3 (prismatic - arm extension segment 3)
-    True,   # 7: joint_arm_l2 (prismatic - arm extension segment 2)
-    True,   # 8: joint_arm_l1 (prismatic - arm extension segment 1)
-    True,   # 9: joint_arm_l0 (prismatic - arm extension segment 0)
-    True,   # 10: joint_wrist_yaw (revolute - wrist yaw)
-    False,  # 11: joint_wrist_yaw_bottom (fixed)
-    True,   # 12: joint_wrist_pitch (revolute - wrist pitch)
-    True,   # 13: joint_wrist_roll (revolute - wrist roll)
-    False,  # 14: joint_gripper_s3_body (fixed)
-    False,  # 15: joint_grasp_center (fixed - end effector)
-]
-chain = ikpy.chain.Chain.from_urdf_file(new_urdf_path, active_links_mask=active_links_mask)
+chain = ikpy.chain.Chain.from_urdf_file(new_urdf_path)
 
 for link in chain.links:
     print(f"* Link Name: {link.name}, Type: {link.joint_type}")
