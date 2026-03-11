@@ -162,39 +162,44 @@ class YOLOEObjectDetector(Node):
         #   then get the centroid of the resulting pointcloud to use as the goal pose (instead of the 2D centroid in part 1)
 
         # Get the target detection
-        detection = detections[target_idx]
-        poly = detection["mask"]  # (N, 2) polygon points in [x, y] pixel format
+        target = detections[target_idx]
+        mask_polygon = target['mask']  # Nx2 polygon vertices, NOT a binary mask
 
-        # Rasterize the polygon to get all pixel coordinates inside the mask
-        h, w = self.latest_depth.shape
-        poly_mask = np.zeros((h, w), dtype=np.uint8)
-        cv2.fillPoly(poly_mask, [poly], 1)
+        # Rasterize the polygon into a binary mask image so we can iterate all interior pixels
+        h_rot, w_rot = self.latest_depth.shape[:2]
+        mask_binary = np.zeros((h_rot, w_rot), dtype=np.uint8)
+        cv2.fillPoly(mask_binary, [mask_polygon], 1)
+        ys_rot, xs_rot = np.where(mask_binary)
 
-        # Get pixel coordinates of all points inside the mask with valid depth
-        ys, xs = np.where((poly_mask == 1) & (self.latest_depth > 0))
+        # camera_info intrinsics are for the ORIGINAL (unrotated) image.
+        # After ROTATE_90_CLOCKWISE: (x_rot, y_rot) -> original (x_orig, y_orig) via:
+        #   x_orig = y_rot,  y_orig = H_orig - 1 - x_rot
+        h_orig = self.latest_color_cam_info.height
 
-        if len(xs) == 0:
+        points_3d = []
+        for x_rot, y_rot in zip(xs_rot, ys_rot):
+            depth = self.latest_depth[y_rot, x_rot]
+            if depth > 0:
+                x_orig = y_rot
+                y_orig = h_orig - 1 - x_rot
+                xyz = detection_utils.pixel_to_3d((x_orig, y_orig), depth, self.latest_color_cam_info)
+                points_3d.append(xyz)
+        
+        print(f"mask pixels: {len(xs_rot)}, valid depth pixels: {len(points_3d)}")
+        if len(points_3d) == 0:
             self.goal_pose_msg = None
             return None
 
-        # Project each mask pixel to 3D and collect the pointcloud
-        camera_mat = np.reshape(self.latest_color_cam_info.k, (3, 3))
-        f_x, c_x = camera_mat[0, 0], camera_mat[0, 2]
-        f_y, c_y = camera_mat[1, 1], camera_mat[1, 2]
-        z_vals = self.latest_depth[ys, xs] / 1000.0  # mm -> m
-        x_vals = (xs - c_x) * z_vals / f_x
-        y_vals = (ys - c_y) * z_vals / f_y
-
         # Compute the 3D centroid of the pointcloud
-        xyz_3d = np.array([x_vals.mean(), y_vals.mean(), z_vals.mean()])
-        print(xyz_3d * 100, 'cm')
+        centroid_3d = np.mean(points_3d, axis=0)
+        print(centroid_3d * 100, 'cm')
 
         # Publish the target object pointcloud
-        points = np.column_stack((x_vals, y_vals, z_vals)).astype(np.float32)
+        points = np.array(points_3d).astype(np.float32)
         pcd_msg = PointCloud2()
         pcd_msg.header = Header()
         pcd_msg.header.stamp = self.get_clock().now().to_msg()
-        pcd_msg.header.frame_id = 'camera_color_optical_frame'
+        pcd_msg.header.frame_id = self.latest_color_cam_info.header.frame_id
         pcd_msg.height = 1
         pcd_msg.width = len(points)
         pcd_msg.fields = [
@@ -211,9 +216,9 @@ class YOLOEObjectDetector(Node):
 
         # Convert to PoseStamped message
         self.goal_pose_msg = detection_utils.get_pose_msg(
-            timestamp=self.get_clock().now().to_msg(),
-            frame_id='camera_color_optical_frame',
-            xyz_out=xyz_3d
+            timestamp=self.latest_color_cam_info.header.stamp,
+            frame_id=self.latest_color_cam_info.header.frame_id,
+            xyz_out=centroid_3d
         )
         
         # TODO: -------------- end ---------------
