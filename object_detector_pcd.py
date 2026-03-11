@@ -100,7 +100,9 @@ class YOLOEObjectDetector(Node):
             self.latest_color = self.bridge.imgmsg_to_cv2(color_msg, desired_encoding='bgr8')
             # translate from bgr to rgb for YOLO-E
             self.latest_color = cv2.cvtColor(self.latest_color, cv2.COLOR_BGR2RGB)
+            self.latest_color = cv2.rotate(self.latest_color, cv2.ROTATE_90_CLOCKWISE)
             self.latest_depth = self.bridge.imgmsg_to_cv2(depth_msg, desired_encoding='passthrough')
+            self.latest_depth = cv2.rotate(self.latest_depth, cv2.ROTATE_90_CLOCKWISE)
             self.latest_color_cam_info = color_cam_info_msg
         except CvBridgeError as e:
             self.get_logger().error(f'CvBridge Error: {e}')
