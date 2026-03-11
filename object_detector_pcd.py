@@ -35,7 +35,7 @@ class YOLOEObjectDetector(Node):
         # TODO: ------------- start --------------
         # leave as is for part 1, 
         # change for part 2 to use the head camera
-        self.color_sub = message_filters.Subscriber(self, Image, '/camera/color/image_rect_raw')
+        self.color_sub = message_filters.Subscriber(self, Image, '/camera/color/image_raw')
         self.depth_sub = message_filters.Subscriber(self, Image, '/camera/aligned_depth_to_color/image_raw')
         self.color_cam_info_sub = message_filters.Subscriber(self, CameraInfo, '/camera/color/camera_info')
 
