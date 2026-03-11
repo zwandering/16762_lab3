@@ -26,9 +26,9 @@ class IKTargetFollowing(HelloNode):
         self.tf_listener = None
         self.joint_states_lock = threading.Lock()
 
-        self.shift_x = 0.03
+        self.shift_x = 0.04
         self.shift_y = -0.04
-        self.shift_z = 0.03
+        self.shift_z = 0.03 # 0.03 for bottle and 0.01 for cup, 
     
     def joint_states_callback(self, msg):
         # unpacks joint state messages for what works with/is expected by ikpy
