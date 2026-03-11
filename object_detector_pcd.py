@@ -135,7 +135,7 @@ class YOLOEObjectDetector(Node):
                 part=1, detections=detections, rgb_image=self.latest_color, depth_image=self.latest_depth)
 
         # get the goal pose and publish it, if it exists
-        self.get_goal_pose(detections)
+        self.get_goal_pose(detections, 1)
 
         if self.goal_pose_msg is None:
             print("OBJECT NOT DETECTED, no pose to publish")
