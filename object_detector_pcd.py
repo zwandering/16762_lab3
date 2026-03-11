@@ -66,11 +66,11 @@ class YOLOEObjectDetector(Node):
 
         # Load the YOLOE model, which should already saved to common models directory on the robot
         #   we use yolo-e-v26-small for its high performance and low latency on limited compute
-        # model_path = '/home/hello-robot/models'
-        # model_name = 'yoloe-26s-seg.pt'
-        # self.model = YOLO(osp.join(model_path, model_name))
-        model_name = './yoloe-26s-seg.pt'
-        self.model = YOLO(model_name)
+        model_path = '/home/hello-robot/models'
+        model_name = 'yoloe-26s-seg.pt'
+        self.model = YOLO(osp.join(model_path, model_name))
+        # model_name = './yoloe-26s-seg.pt'
+        # self.model = YOLO(model_name)
 
         # pass prompt for the object/s you want to detect
         self.obj_queries = obj_queries
