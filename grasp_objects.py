@@ -19,7 +19,7 @@ class IKTargetFollowing(HelloNode):
     def __init__(self):
         HelloNode.__init__(self)
 
-        self.delta = 0.05 # cm
+        self.delta = 0.06 # cm
         self.target_frame = 'base_link'
         self.gripper_frame = 'link_grasp_center'
         self.tf_buffer = None
@@ -27,7 +27,7 @@ class IKTargetFollowing(HelloNode):
         self.joint_states_lock = threading.Lock()
 
         self.shift_x = 0.04
-        self.shift_y = -0.06
+        self.shift_y = -0.05
         self.shift_z = 0.03 # 0.03 for bottle and 0.01 for cup, 
     
     def joint_states_callback(self, msg):
