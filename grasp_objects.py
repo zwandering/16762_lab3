@@ -26,7 +26,7 @@ class IKTargetFollowing(HelloNode):
         self.tf_listener = None
         self.joint_states_lock = threading.Lock()
 
-        self.shift_x = 0.05
+        self.shift_x = 0.07
         self.shift_y = 0.0
         self.shift_z = 0.02
     
